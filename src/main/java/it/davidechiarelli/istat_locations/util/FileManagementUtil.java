@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,8 +24,6 @@ public class FileManagementUtil {
 			URLConnection urlConnection = urlObject.openConnection();
 			InputStream inputStream = urlConnection.getInputStream();
 			return readFromInputStream(inputStream);
-		} catch (MalformedURLException e) {
-			logger.error("Error acquiring data from URL.", e);
 		} catch (IOException e) {
 			logger.error("Error reading data from URL.", e);
 		}
@@ -42,12 +40,10 @@ public class FileManagementUtil {
 			urlObject = new URL(configUrl);
 			URLConnection urlConnection = urlObject.openConnection();
 			InputStream inputStream = urlConnection.getInputStream();
-			return  new BufferedReader(new InputStreamReader(inputStream, "ISO-8859-1"));
-		} catch (MalformedURLException e) {
-			logger.error("Error acquiring data from URL.", e);
+			return  new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
 		} catch (IOException e) {
 			logger.error("Error acquiring data from URL.", e);
-		}
+		} 
 		return null;
 	}
 

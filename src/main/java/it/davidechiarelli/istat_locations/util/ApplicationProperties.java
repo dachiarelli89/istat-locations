@@ -7,15 +7,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ApplicationProperties {
-    private static Properties properties;
+    private static Properties properties = new Properties();
     private static ApplicationProperties instance;
     
     Logger logger = LogManager.getLogger(ApplicationProperties.class);
-    
-    
 
     private ApplicationProperties() {
-        properties = new Properties();
+        
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
         } catch (IOException e) {

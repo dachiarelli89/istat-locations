@@ -1,7 +1,7 @@
 package it.davidechiarelli.istat_locations.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,33 +30,33 @@ public class AnagService implements IAnagService {
 	@Override
 	public Map<LocationMapEnum, List> getLocations() {
 		
-		Map<LocationMapEnum, List> locations = new HashMap<LocationMapEnum, List>();
+		Map<LocationMapEnum, List> locations = new EnumMap<>(LocationMapEnum.class);
 			
 		try {
 			logger.info("Starting reading of geo anagraph.");
 			List<ElencoComuniCSV> listCsvObj = getCsvObject();
 			
 			List<Region> listRegion = parseRegion(listCsvObj);
-			logger.info(listRegion.size()+" regions parsed");
+			logger.info("{} regions parsed", listRegion.size());
 			locations.put(LocationMapEnum.REGION, listRegion);
 			
 			
 			if(logger.isDebugEnabled())
-				listRegion.forEach(region -> logger.debug(region));
+				listRegion.forEach(logger::debug);
 			
 			List<Province> listProvince = parseProvince(listCsvObj, listRegion);					
-			logger.info(listProvince.size()+" provinces parsed");
+			logger.info("{} provinces parsed", listProvince.size());
 			locations.put(LocationMapEnum.PROVINCE, listProvince);
 			
 			if(logger.isDebugEnabled())
-				listProvince.forEach(province -> logger.debug(province));
+				listRegion.forEach(logger::debug);
 			
 			List<City> listCity = parseCity(listCsvObj, listProvince);	
-			logger.info(listCity.size()+" cities parsed");
+			logger.info("{} cities parsed", listCity.size());
 			locations.put(LocationMapEnum.CITY, listCity);
 			
 			if(logger.isDebugEnabled())
-				listCity.forEach(city -> logger.debug(city));
+				listRegion.forEach(logger::debug);
 
 		} catch (Exception e) {
 			logger.error("Error during cities reading.");
@@ -68,40 +68,40 @@ public class AnagService implements IAnagService {
 	}
 
 	private List<City> parseCity(List<ElencoComuniCSV> listCsvObj, List<Province> listProvince) {
-		List<City> listCity = new ArrayList<City>();
+		List<City> listCity = new ArrayList<>();
 		
 		listCsvObj.forEach(item -> {
-			if(listCity.size()==0) {
+			if(listCity.isEmpty()) {
 				listCity.add(new City(
 						item.getDenominazione(), 
 						item.getDenominazioneInter(), 
 						item.getCodiceComuneAlfanumerico(), 
-						item.getIsCapoluogo().equals("1") ? true : false,
+						item.getIsCapoluogo().equals("1"),
 						item.getCodiceComune(), 
 						item.getCodiceCatastale(), 
 						Integer.parseInt(item.getPopolazioneLegale().replace(".","").trim()), 
 						item.getNuts1(), 
 						item.getNuts2(), 
 						item.getNuts3(),
-						listProvince.stream().filter(province -> province.getName().toUpperCase().equals(item.getDenominazioneUnitaTerritoriale().toUpperCase())).findFirst().get()
+						listProvince.stream().filter(province -> province.getName().equalsIgnoreCase(item.getDenominazioneUnitaTerritoriale())).findFirst().get()
 						)
 					);
 			}
 			else {
-				if(! listCity.stream().map(cityName -> cityName.getName()).map(String::toUpperCase).collect(Collectors.toList())
+				if(! listCity.stream().map(City::getName).map(String::toUpperCase).collect(Collectors.toList())
 					.contains(item.getDenominazione().toUpperCase())) {
 					listCity.add(new City(
 							item.getDenominazione(), 
 							item.getDenominazioneInter(), 
 							item.getCodiceComuneAlfanumerico(), 
-							item.getIsCapoluogo().equals("1") ? true : false, 
+							item.getIsCapoluogo().equals("1"), 
 							item.getCodiceComune(), 
 							item.getCodiceCatastale(), 
 							Integer.parseInt(item.getPopolazioneLegale().replace(".","").trim()), 
 							item.getNuts1(), 
 							item.getNuts2(), 
 							item.getNuts3(),
-							listProvince.stream().filter(province -> province.getName().toUpperCase().equals(item.getDenominazioneUnitaTerritoriale().toUpperCase())).findFirst().get()
+							listProvince.stream().filter(province -> province.getName().equalsIgnoreCase(item.getDenominazioneUnitaTerritoriale())).findFirst().get()
 							)
 						);
 				}
@@ -112,10 +112,10 @@ public class AnagService implements IAnagService {
 	}
 
 	private List<Province> parseProvince(List<ElencoComuniCSV> listCsvObj, List<Region> listRegion) {
-		List<Province> listProvince = new ArrayList<Province>();
+		List<Province> listProvince = new ArrayList<>();
 		
 		listCsvObj.forEach(item -> {
-			if(listProvince.size()==0) {
+			if(listProvince.isEmpty()) {
 				listProvince.add(new Province(
 						item.getDenominazioneUnitaTerritoriale(), 
 						item.getSiglaAutomobilistica(), 
@@ -124,7 +124,7 @@ public class AnagService implements IAnagService {
 					);
 			}
 			else {
-				if(! listProvince.stream().map(provinceName -> provinceName.getName()).map(String::toUpperCase).collect(Collectors.toList())
+				if(! listProvince.stream().map(Province::getName).map(String::toUpperCase).collect(Collectors.toList())
 					.contains(item.getDenominazioneUnitaTerritoriale().toUpperCase())) {
 					listProvince.add(new Province(item.getDenominazioneUnitaTerritoriale(), 
 							item.getSiglaAutomobilistica(), 
@@ -139,14 +139,14 @@ public class AnagService implements IAnagService {
 	}
 
 	private List<Region> parseRegion(List<ElencoComuniCSV> listCsvObj) {
-		List<Region> listRegion = new ArrayList<Region>();
+		List<Region> listRegion = new ArrayList<>();
 		
 		listCsvObj.forEach(item -> {
-			if(listRegion.size()==0) {
+			if(listRegion.isEmpty()) {
 				listRegion.add(new Region(item.getDenominazioneRegione(), item.getCodiceRegione()));
 			}
 			else {
-				if(! listRegion.stream().map(regionName -> regionName.getName()).map(String::toUpperCase).collect(Collectors.toList())
+				if(! listRegion.stream().map(Region::getName).map(String::toUpperCase).collect(Collectors.toList())
 					.contains(item.getDenominazioneRegione().toUpperCase())) {
 					listRegion.add(new Region(item.getDenominazioneRegione(), item.getCodiceRegione()));
 				}
@@ -158,7 +158,7 @@ public class AnagService implements IAnagService {
 
 
 	private List<ElencoComuniCSV> getCsvObject(){
-		ColumnPositionMappingStrategy<ElencoComuniCSV> ms = new ColumnPositionMappingStrategy<ElencoComuniCSV>();
+		ColumnPositionMappingStrategy<ElencoComuniCSV> ms = new ColumnPositionMappingStrategy<>();
 		ms.setType(ElencoComuniCSV.class);
 
 		CsvToBean<ElencoComuniCSV> cb = new CsvToBeanBuilder<ElencoComuniCSV>(fmu.getAnagFileBuffer())
