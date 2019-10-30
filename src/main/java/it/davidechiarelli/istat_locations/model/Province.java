@@ -14,6 +14,10 @@ public class Province {
 	@NonNull
 	private String name;
 	@NonNull
+	private String provinceCode;
+	@NonNull
+	private String oldProvinceCode;
+	@NonNull
 	private String carCode;
 	@NonNull
 	private Region region;

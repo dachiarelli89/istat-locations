@@ -15,13 +15,14 @@ import com.opencsv.bean.CsvToBeanBuilder;
 
 import it.davidechiarelli.istat_locations.csv.ElencoComuniCSV;
 import it.davidechiarelli.istat_locations.model.City;
+import it.davidechiarelli.istat_locations.model.GeograficZone;
 import it.davidechiarelli.istat_locations.model.LocationMapEnum;
 import it.davidechiarelli.istat_locations.model.Province;
 import it.davidechiarelli.istat_locations.model.Region;
 import it.davidechiarelli.istat_locations.service.IAnagService;
 import it.davidechiarelli.istat_locations.util.FileManagementUtil;
 
-
+@SuppressWarnings("rawtypes")
 public class AnagService implements IAnagService {
 	private FileManagementUtil fmu = new FileManagementUtil();
 	
@@ -35,6 +36,14 @@ public class AnagService implements IAnagService {
 		try {
 			logger.info("Starting reading of geo anagraph.");
 			List<ElencoComuniCSV> listCsvObj = getCsvObject();
+			
+			List<GeograficZone> listGeoZone = parseGeoZone(listCsvObj);
+			logger.info("{} zones parsed", listGeoZone.size());
+			locations.put(LocationMapEnum.ZONE, listGeoZone);
+			
+			
+			if(logger.isDebugEnabled())
+				listGeoZone.forEach(logger::debug);
 			
 			List<Region> listRegion = parseRegion(listCsvObj);
 			logger.info("{} regions parsed", listRegion.size());
@@ -51,7 +60,7 @@ public class AnagService implements IAnagService {
 			if(logger.isDebugEnabled())
 				listRegion.forEach(logger::debug);
 			
-			List<City> listCity = parseCity(listCsvObj, listProvince);	
+			List<City> listCity = parseCity(listCsvObj, listProvince, listGeoZone);	
 			logger.info("{} cities parsed", listCity.size());
 			locations.put(LocationMapEnum.CITY, listCity);
 			
@@ -67,14 +76,31 @@ public class AnagService implements IAnagService {
 		return locations;
 	}
 
-	private List<City> parseCity(List<ElencoComuniCSV> listCsvObj, List<Province> listProvince) {
+	private List<GeograficZone> parseGeoZone(List<ElencoComuniCSV> listCsvObj) {
+		List<GeograficZone> listZones = new ArrayList<>();
+		
+		listCsvObj.forEach(item -> {
+			if(listZones.isEmpty() ||
+					(! listZones.stream().map(GeograficZone::getCode).collect(Collectors.toList())
+							.contains(item.getCodiceRipartGeo()))) {
+				listZones.add(new GeograficZone(item.getRipartizioneGeografica(), item.getCodiceRipartGeo()));
+			}
+		});
+		
+		return listZones;
+	}
+
+	private List<City> parseCity(List<ElencoComuniCSV> listCsvObj, List<Province> listProvince, List<GeograficZone> listGeoZone) {
 		List<City> listCity = new ArrayList<>();
 		
 		listCsvObj.forEach(item -> {
-			if(listCity.isEmpty()) {
+			if(listCity.isEmpty() ||
+					(! listCity.stream().map(City::getName).map(String::toUpperCase).collect(Collectors.toList())
+							.contains(item.getDenominazione().toUpperCase()))) {
 				listCity.add(new City(
 						item.getDenominazione(), 
 						item.getDenominazioneInter(), 
+						item.getDenominazioneStraniera(),
 						item.getCodiceComuneAlfanumerico(), 
 						item.getIsCapoluogo().equals("1"),
 						item.getCodiceComune(), 
@@ -83,28 +109,14 @@ public class AnagService implements IAnagService {
 						item.getNuts1(), 
 						item.getNuts2(), 
 						item.getNuts3(),
-						listProvince.stream().filter(province -> province.getName().equalsIgnoreCase(item.getDenominazioneUnitaTerritoriale())).findFirst().get()
+						item.getProgressivoComune(),
+						item.getCodiceComune110Prov(),
+						item.getCodiceComune107Prov(),
+						item.getCodiceComune103Prov(),
+						listProvince.stream().filter(province -> province.getName().equalsIgnoreCase(item.getDenominazioneUnitaTerritoriale())).findFirst().get(),
+						listGeoZone.stream().filter(geoZone -> geoZone.getCode().equals(item.getCodiceRipartGeo())).findFirst().get()
 						)
 					);
-			}
-			else {
-				if(! listCity.stream().map(City::getName).map(String::toUpperCase).collect(Collectors.toList())
-					.contains(item.getDenominazione().toUpperCase())) {
-					listCity.add(new City(
-							item.getDenominazione(), 
-							item.getDenominazioneInter(), 
-							item.getCodiceComuneAlfanumerico(), 
-							item.getIsCapoluogo().equals("1"), 
-							item.getCodiceComune(), 
-							item.getCodiceCatastale(), 
-							Integer.parseInt(item.getPopolazioneLegale().replace(".","").trim()), 
-							item.getNuts1(), 
-							item.getNuts2(), 
-							item.getNuts3(),
-							listProvince.stream().filter(province -> province.getName().equalsIgnoreCase(item.getDenominazioneUnitaTerritoriale())).findFirst().get()
-							)
-						);
-				}
 			}
 		});
 		
@@ -115,23 +127,17 @@ public class AnagService implements IAnagService {
 		List<Province> listProvince = new ArrayList<>();
 		
 		listCsvObj.forEach(item -> {
-			if(listProvince.isEmpty()) {
+			if(listProvince.isEmpty() || 
+					(! listProvince.stream().map(Province::getName).map(String::toUpperCase).collect(Collectors.toList())
+							.contains(item.getDenominazioneUnitaTerritoriale().toUpperCase()))) {
 				listProvince.add(new Province(
 						item.getDenominazioneUnitaTerritoriale(), 
+						item.getCodiceUnitaTerritoriale(),
+						item.getCodiceProcincia(),
 						item.getSiglaAutomobilistica(), 
 						listRegion.stream().filter(region -> region.getCode().equals(item.getCodiceRegione())).findFirst().get()
 						)
 					);
-			}
-			else {
-				if(! listProvince.stream().map(Province::getName).map(String::toUpperCase).collect(Collectors.toList())
-					.contains(item.getDenominazioneUnitaTerritoriale().toUpperCase())) {
-					listProvince.add(new Province(item.getDenominazioneUnitaTerritoriale(), 
-							item.getSiglaAutomobilistica(), 
-							listRegion.stream().filter(region -> region.getCode().equals(item.getCodiceRegione())).findFirst().get()
-							)
-						);
-				}
 			}
 		});
 		
@@ -142,14 +148,10 @@ public class AnagService implements IAnagService {
 		List<Region> listRegion = new ArrayList<>();
 		
 		listCsvObj.forEach(item -> {
-			if(listRegion.isEmpty()) {
+			if(listRegion.isEmpty() ||
+					(! listRegion.stream().map(Region::getName).map(String::toUpperCase).collect(Collectors.toList())
+							.contains(item.getDenominazioneRegione().toUpperCase()))) {
 				listRegion.add(new Region(item.getDenominazioneRegione(), item.getCodiceRegione()));
-			}
-			else {
-				if(! listRegion.stream().map(Region::getName).map(String::toUpperCase).collect(Collectors.toList())
-					.contains(item.getDenominazioneRegione().toUpperCase())) {
-					listRegion.add(new Region(item.getDenominazioneRegione(), item.getCodiceRegione()));
-				}
 			}
 		});
 		

@@ -14,6 +14,8 @@ public class City {
 	@NonNull
 	private String name;
 	@NonNull
+	private String internationalName;
+	@NonNull
 	private String foreignName;
 	@NonNull
 	private String alfanumericalCode;
@@ -31,7 +33,19 @@ public class City {
 	private String nuts2;
 	@NonNull
 	private String nuts3;
+	@NonNull
+	private String progressiveNumber;
+	@NonNull
+	private String cityCode110Prov;
+	@NonNull
+	private String cityCode107Prov;
+	@NonNull
+	private String cityCode103Prov;
+	
 	
     @NonNull
 	private Province province;
+    
+    @NonNull
+	private GeograficZone geograficZone;
 }
