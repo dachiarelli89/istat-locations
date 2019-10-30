@@ -13,7 +13,7 @@ import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
-import it.davidechiarelli.istat_locations.csv.ElencoComuniCSV;
+import it.davidechiarelli.istat_locations.model.csv.ElencoComuniCSV;
 import it.davidechiarelli.istat_locations.model.City;
 import it.davidechiarelli.istat_locations.model.GeograficZone;
 import it.davidechiarelli.istat_locations.model.LocationMapEnum;

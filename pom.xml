@@ -15,8 +15,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <sonar.coverage.exclusions>src/main/java/it/davidechiarelli/istat_locations/model/*</sonar.coverage.exclusions>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<sonar.coverage.exclusions>src/main/java/it/davidechiarelli/istat_locations/model/*</sonar.coverage.exclusions>
 	</properties>
 
 	<dependencies>
@@ -41,6 +41,18 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>2.12.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<version>3.0.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility-proxy</artifactId>
+			<version>3.0.0</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>

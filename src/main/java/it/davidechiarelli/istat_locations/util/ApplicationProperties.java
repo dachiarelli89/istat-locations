@@ -27,8 +27,15 @@ public class ApplicationProperties {
     	}
     	return instance;
     }
+    
+    public static void clear() {
+    	instance=null;
+    }
 
     public String getProperty(String propName) {
-        return properties.getProperty(propName);
+    	if(properties!=null)
+    		return properties.getProperty(propName);
+    	else 
+    		return "";
     }
 }

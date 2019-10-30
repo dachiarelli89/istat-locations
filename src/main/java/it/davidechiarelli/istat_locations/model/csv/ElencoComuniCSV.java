@@ -1,4 +1,4 @@
-package it.davidechiarelli.istat_locations.csv;
+package it.davidechiarelli.istat_locations.model.csv;
 
 import com.opencsv.bean.CsvBindByPosition;
 
