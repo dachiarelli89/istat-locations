@@ -32,5 +32,4 @@ build/
 x
 
 ### MAC ###
-._DS_Store
-*_DS_Store
+.DS_Store
