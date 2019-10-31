@@ -27,13 +27,14 @@ import it.davidechiarelli.istat_locations.util.FileManagementUtil;
 @SuppressWarnings("rawtypes")
 public class AnagService implements IAnagService {
 	private FileManagementUtil fmu = new FileManagementUtil();
+	
+	private Map<LocationMapEnum, List> locations;
 
 	private static final Logger logger = LogManager.getLogger(AnagService.class);
 
-	@Override
-	public Map<LocationMapEnum, List> getLocations() {
+	private Map<LocationMapEnum, List> loadLocations() {
 
-		Map<LocationMapEnum, List> locations = new EnumMap<>(LocationMapEnum.class);
+		locations = new EnumMap<>(LocationMapEnum.class);
 
 		try {
 			logger.info("Starting reading of geo anagraph.");
@@ -179,5 +180,33 @@ public class AnagService implements IAnagService {
 			listCitiesCsv = cb.parse();
 		}
 		return listCitiesCsv;
+	}
+
+	@Override
+	public List<GeograficZone> getZones() {
+		if(locations == null)
+			loadLocations();
+		return locations.get(LocationMapEnum.ZONE);
+	}
+
+	@Override
+	public List<Region> getRegions() {
+		if(locations == null)
+			loadLocations();
+		return locations.get(LocationMapEnum.REGION);
+	}
+
+	@Override
+	public List<Province> getProvinces() {
+		if(locations == null)
+			loadLocations();
+		return locations.get(LocationMapEnum.PROVINCE);
+	}
+
+	@Override
+	public List<City> getCities() {
+		if(locations == null)
+			loadLocations();
+		return locations.get(LocationMapEnum.CITY);
 	}
 }
