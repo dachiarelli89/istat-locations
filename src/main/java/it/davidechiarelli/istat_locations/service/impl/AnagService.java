@@ -32,50 +32,49 @@ public class AnagService implements IAnagService {
 
 	private static final Logger logger = LogManager.getLogger(AnagService.class);
 
-	private Map<LocationMapEnum, List> loadLocations() {
+	private void loadLocations() {
+		if(locations.isEmpty()) {
+			locations = new EnumMap<>(LocationMapEnum.class);
 
-		locations = new EnumMap<>(LocationMapEnum.class);
+			try {
+				logger.info("Starting reading of geo anagraph.");
+				List<ElencoComuniCSV> listCsvObj = getCsvObject();
 
-		try {
-			logger.info("Starting reading of geo anagraph.");
-			List<ElencoComuniCSV> listCsvObj = getCsvObject();
+				if(listCsvObj.isEmpty())
+					throw new ISTATWebSiteUnreachableException();
 
-			if(listCsvObj.isEmpty())
-				throw new ISTATWebSiteUnreachableException();
-
-			List<GeograficZone> listGeoZone = parseGeoZone(listCsvObj);
-			logger.info("{} zones parsed", listGeoZone.size());
-			locations.put(LocationMapEnum.ZONE, listGeoZone);
-
-
-			listGeoZone.forEach(logger::debug);
-
-			List<Region> listRegion = parseRegion(listCsvObj);
-			logger.info("{} regions parsed", listRegion.size());
-			locations.put(LocationMapEnum.REGION, listRegion);
+				List<GeograficZone> listGeoZone = parseGeoZone(listCsvObj);
+				logger.info("{} zones parsed", listGeoZone.size());
+				locations.put(LocationMapEnum.ZONE, listGeoZone);
 
 
-			listRegion.forEach(logger::debug);
+				listGeoZone.forEach(logger::debug);
 
-			List<Province> listProvince = parseProvince(listCsvObj, listRegion);					
-			logger.info("{} provinces parsed", listProvince.size());
-			locations.put(LocationMapEnum.PROVINCE, listProvince);
+				List<Region> listRegion = parseRegion(listCsvObj);
+				logger.info("{} regions parsed", listRegion.size());
+				locations.put(LocationMapEnum.REGION, listRegion);
 
-			listProvince.forEach(logger::debug);
 
-			List<City> listCity = parseCity(listCsvObj, listProvince, listGeoZone);	
-			logger.info("{} cities parsed", listCity.size());
-			locations.put(LocationMapEnum.CITY, listCity);
+				listRegion.forEach(logger::debug);
 
-			listCity.forEach(logger::debug);
+				List<Province> listProvince = parseProvince(listCsvObj, listRegion);					
+				logger.info("{} provinces parsed", listProvince.size());
+				locations.put(LocationMapEnum.PROVINCE, listProvince);
 
-		} catch (Exception e) {
-			logger.error("Error during cities reading.");
-			logger.error(e.toString());
-			return null;
+				listProvince.forEach(logger::debug);
+
+				List<City> listCity = parseCity(listCsvObj, listProvince, listGeoZone);	
+				logger.info("{} cities parsed", listCity.size());
+				locations.put(LocationMapEnum.CITY, listCity);
+
+				listCity.forEach(logger::debug);
+
+			} catch (Exception e) {
+				logger.error("Error during cities reading.");
+				logger.error(e.toString());
+			}
+			logger.info("Finish reading geo anagraph.");
 		}
-		logger.info("Finish reading geo anagraph.");
-		return locations;
 	}
 
 	private List<GeograficZone> parseGeoZone(List<ElencoComuniCSV> listCsvObj) {
@@ -184,29 +183,25 @@ public class AnagService implements IAnagService {
 
 	@Override
 	public List<GeograficZone> getZones() {
-		if(locations == null)
-			loadLocations();
+		loadLocations();
 		return locations.get(LocationMapEnum.ZONE);
 	}
 
 	@Override
 	public List<Region> getRegions() {
-		if(locations == null)
-			loadLocations();
+		loadLocations();
 		return locations.get(LocationMapEnum.REGION);
 	}
 
 	@Override
 	public List<Province> getProvinces() {
-		if(locations == null)
-			loadLocations();
+		loadLocations();
 		return locations.get(LocationMapEnum.PROVINCE);
 	}
 
 	@Override
 	public List<City> getCities() {
-		if(locations == null)
-			loadLocations();
+		loadLocations();
 		return locations.get(LocationMapEnum.CITY);
 	}
 }
