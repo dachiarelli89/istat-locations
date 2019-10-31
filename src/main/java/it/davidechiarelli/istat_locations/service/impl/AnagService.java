@@ -38,7 +38,7 @@ public class AnagService implements IAnagService {
 		try {
 			logger.info("Starting reading of geo anagraph.");
 			List<ElencoComuniCSV> listCsvObj = getCsvObject();
-			
+
 			if(listCsvObj.isEmpty())
 				throw new ISTATWebSiteUnreachableException();
 
@@ -47,30 +47,26 @@ public class AnagService implements IAnagService {
 			locations.put(LocationMapEnum.ZONE, listGeoZone);
 
 
-			if(logger.isDebugEnabled())
-				listGeoZone.forEach(logger::debug);
+			listGeoZone.forEach(logger::debug);
 
 			List<Region> listRegion = parseRegion(listCsvObj);
 			logger.info("{} regions parsed", listRegion.size());
 			locations.put(LocationMapEnum.REGION, listRegion);
 
 
-			if(logger.isDebugEnabled())
-				listRegion.forEach(logger::debug);
+			listRegion.forEach(logger::debug);
 
 			List<Province> listProvince = parseProvince(listCsvObj, listRegion);					
 			logger.info("{} provinces parsed", listProvince.size());
 			locations.put(LocationMapEnum.PROVINCE, listProvince);
 
-			if(logger.isDebugEnabled())
-				listProvince.forEach(logger::debug);
+			listProvince.forEach(logger::debug);
 
 			List<City> listCity = parseCity(listCsvObj, listProvince, listGeoZone);	
 			logger.info("{} cities parsed", listCity.size());
 			locations.put(LocationMapEnum.CITY, listCity);
 
-			if(logger.isDebugEnabled())
-				listCity.forEach(logger::debug);
+			listCity.forEach(logger::debug);
 
 		} catch (Exception e) {
 			logger.error("Error during cities reading.");
