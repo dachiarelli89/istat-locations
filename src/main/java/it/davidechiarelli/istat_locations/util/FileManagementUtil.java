@@ -13,7 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class FileManagementUtil {
-	private final String configUrl=ApplicationProperties.getInstance().getProperty("anag.url");
+	private static final String CONFIG_URL="https://www.istat.it/storage/codici-unita-amministrative/Elenco-comuni-italiani.csv";
 	
 	Logger logger = LogManager.getLogger(FileManagementUtil.class);
 	
@@ -31,13 +31,13 @@ public class FileManagementUtil {
 	}
 
 	public String getAnagFileContent() {
-		return getAnagFileContent(configUrl);
+		return getAnagFileContent(CONFIG_URL);
 	}
 	
 	public Reader getAnagFileBuffer() {
 		URL urlObject;
 		try {
-			urlObject = new URL(configUrl);
+			urlObject = new URL(CONFIG_URL);
 			URLConnection urlConnection = urlObject.openConnection();
 			InputStream inputStream = urlConnection.getInputStream();
 			return  new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
