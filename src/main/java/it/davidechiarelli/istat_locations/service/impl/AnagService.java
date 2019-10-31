@@ -39,7 +39,7 @@ public class AnagService implements IAnagService {
 			logger.info("Starting reading of geo anagraph.");
 			List<ElencoComuniCSV> listCsvObj = getCsvObject();
 			
-			if(listCsvObj == null)
+			if(listCsvObj.isEmpty())
 				throw new ISTATWebSiteUnreachableException();
 
 			List<GeograficZone> listGeoZone = parseGeoZone(listCsvObj);
@@ -63,14 +63,14 @@ public class AnagService implements IAnagService {
 			locations.put(LocationMapEnum.PROVINCE, listProvince);
 
 			if(logger.isDebugEnabled())
-				listRegion.forEach(logger::debug);
+				listProvince.forEach(logger::debug);
 
 			List<City> listCity = parseCity(listCsvObj, listProvince, listGeoZone);	
 			logger.info("{} cities parsed", listCity.size());
 			locations.put(LocationMapEnum.CITY, listCity);
 
 			if(logger.isDebugEnabled())
-				listRegion.forEach(logger::debug);
+				listCity.forEach(logger::debug);
 
 		} catch (Exception e) {
 			logger.error("Error during cities reading.");
@@ -169,6 +169,7 @@ public class AnagService implements IAnagService {
 		ms.setType(ElencoComuniCSV.class);
 
 		Reader anagReader=fmu.getAnagReader();
+		List<ElencoComuniCSV> listCitiesCsv = new ArrayList<>();
 
 		if(anagReader != null){
 			CsvToBean<ElencoComuniCSV> cb = new CsvToBeanBuilder<ElencoComuniCSV>(fmu.getAnagReader())
@@ -179,9 +180,8 @@ public class AnagService implements IAnagService {
 					.withIgnoreQuotations(true)
 					.build();
 
-			return cb.parse();
+			listCitiesCsv = cb.parse();
 		}
-		else
-			return null;
+		return listCitiesCsv;
 	}
 }
