@@ -6,6 +6,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -15,10 +18,12 @@ import it.davidechiarelli.istat_locations.exception.ISTATWebSiteUnreachableExcep
 import it.davidechiarelli.istat_locations.model.LocationMapEnum;
 import it.davidechiarelli.istat_locations.service.IAnagService;
 import it.davidechiarelli.istat_locations.service.impl.AnagService;
+import it.davidechiarelli.istat_locations.util.FileManagementUtil;
 
 
 public class AppTest{
-    @Test
+	
+	@Test
     public void testSuccessLocationParsing() {
     	IAnagService anagService = new AnagService();
     	Map<LocationMapEnum, List> locations = anagService.getLocations();
