@@ -33,7 +33,7 @@ public class AnagService implements IAnagService {
 	private static final Logger logger = LogManager.getLogger(AnagService.class);
 
 	private void loadLocations() {
-		if(locations.isEmpty()) {
+		if(locations == null || locations.isEmpty()) {
 			locations = new EnumMap<>(LocationMapEnum.class);
 
 			try {
