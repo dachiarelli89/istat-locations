@@ -16,7 +16,7 @@
 		<java.version>1.8</java.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<sonar.coverage.exclusions>src/main/java/it/davidechiarelli/istat_locations/model/*</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>src/main/java/it/davidechiarelli/istat_locations/model/**/*</sonar.coverage.exclusions>
 	</properties>
 
 	<dependencies>
@@ -48,7 +48,11 @@
 			<version>3.1.0</version>
 			<scope>test</scope>
 		</dependency>
-
-
+		<dependency>
+			<groupId>io.sniffy</groupId>
+			<artifactId>sniffy-junit</artifactId>
+			<version>3.1.5</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>

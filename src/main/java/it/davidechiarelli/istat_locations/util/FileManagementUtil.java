@@ -17,24 +17,7 @@ public class FileManagementUtil {
 	
 	Logger logger = LogManager.getLogger(FileManagementUtil.class);
 	
-	public String getAnagFileContent(String url) {
-		URL urlObject;
-		try {
-			urlObject = new URL(url);
-			URLConnection urlConnection = urlObject.openConnection();
-			InputStream inputStream = urlConnection.getInputStream();
-			return readFromInputStream(inputStream);
-		} catch (IOException e) {
-			logger.error("Error reading data from URL.", e);
-		}
-		return null;
-	}
-
-	public String getAnagFileContent() {
-		return getAnagFileContent(CONFIG_URL);
-	}
-	
-	public Reader getAnagFileBuffer() {
+	public Reader getAnagReader() {
 		URL urlObject;
 		try {
 			urlObject = new URL(CONFIG_URL);
@@ -45,18 +28,5 @@ public class FileManagementUtil {
 			logger.error("Error acquiring data from URL.", e);
 		} 
 		return null;
-	}
-
-	private String readFromInputStream(InputStream inputStream)
-			throws IOException {
-		StringBuilder resultStringBuilder = new StringBuilder();
-		try (BufferedReader br
-				= new BufferedReader(new InputStreamReader(inputStream, "utf8"))) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				resultStringBuilder.append(line).append("\n");
-			}
-		}
-		return resultStringBuilder.toString();
 	}
 }
