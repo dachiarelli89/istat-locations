@@ -19,14 +19,6 @@
 		<sonar.coverage.exclusions>src/main/java/it/davidechiarelli/istat_locations/model/**/*</sonar.coverage.exclusions>
 	</properties>
 
-	<distributionManagement>
-		<repository>
-			<id>github</id>
-			<name>GitHub OWNER dachiarelli89 Maven Packages</name>
-			<url>https://maven.pkg.github.com/dachiarelli89/istat-locations</url>
-		</repository>
-	</distributionManagement>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.opencsv</groupId>
@@ -63,4 +55,18 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.1.1</version>
+				<configuration>
+					<reportOutputDirectory>${project.reporting.outputDirectory}/docs</reportOutputDirectory>
+					<destDir>docs</destDir>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>

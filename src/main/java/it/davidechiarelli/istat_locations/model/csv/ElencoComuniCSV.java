@@ -4,6 +4,13 @@ import com.opencsv.bean.CsvBindByPosition;
 
 import lombok.Data;
 
+/**
+ * This model class is used to read data from file loaded into ISTAT location. 
+ * 
+ * @author Davide Chiarelli
+ * @version 1.0.0
+ *
+ */
 @Data
 public class ElencoComuniCSV {
 	@CsvBindByPosition(position = 0)

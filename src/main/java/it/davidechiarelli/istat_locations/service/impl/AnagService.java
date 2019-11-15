@@ -24,6 +24,14 @@ import it.davidechiarelli.istat_locations.model.Region;
 import it.davidechiarelli.istat_locations.service.IAnagService;
 import it.davidechiarelli.istat_locations.util.FileManagementUtil;
 
+/**
+ * This class is the basic implementation for IAnagService, which contains methods to retrieve zones, regions, provinces
+ * and cities plus some internal fuctions used for managing data.
+ * 
+ * @author Davide Chiarelli
+ * @version 1.0.0
+ *
+ */
 @SuppressWarnings("rawtypes")
 public class AnagService implements IAnagService {
 	private FileManagementUtil fmu = new FileManagementUtil();
@@ -32,6 +40,9 @@ public class AnagService implements IAnagService {
 
 	private static final Logger logger = LogManager.getLogger(AnagService.class);
 
+	/**
+	 * This private method is used to load data from ISTAT web site if they aren't already loaded in previous execution
+	 */
 	private void loadLocations() {
 		if(locations == null) {
 			locations = new EnumMap<>(LocationMapEnum.class);
@@ -77,6 +88,12 @@ public class AnagService implements IAnagService {
 		}
 	}
 
+	/**
+	 * This private method, using raw data from ISTAT, parses GeograficZone list
+	 * 
+	 * @param listCsvObj
+	 * @return List<GeograficZone>
+	 */
 	private List<GeograficZone> parseGeoZone(List<ElencoComuniCSV> listCsvObj) {
 		List<GeograficZone> listZones = new ArrayList<>();
 
@@ -91,6 +108,12 @@ public class AnagService implements IAnagService {
 		return listZones;
 	}
 
+	/**
+	 * This private method, using raw data from ISTAT, parses City list
+	 * 
+	 * @param listCsvObj
+	 * @return List<City>
+	 */
 	private List<City> parseCity(List<ElencoComuniCSV> listCsvObj, List<Province> listProvince, List<GeograficZone> listGeoZone) {
 		List<City> listCity = new ArrayList<>();
 
@@ -124,6 +147,12 @@ public class AnagService implements IAnagService {
 		return listCity;
 	}
 
+	/**
+	 * This private method, using raw data from ISTAT, parses Province list
+	 * 
+	 * @param listCsvObj
+	 * @return List<Province>
+	 */
 	private List<Province> parseProvince(List<ElencoComuniCSV> listCsvObj, List<Region> listRegion) {
 		List<Province> listProvince = new ArrayList<>();
 
@@ -145,6 +174,12 @@ public class AnagService implements IAnagService {
 		return listProvince;
 	}
 
+	/**
+	 * This private method, using raw data from ISTAT, parses Region list
+	 * 
+	 * @param listCsvObj
+	 * @return List<Region>
+	 */
 	private List<Region> parseRegion(List<ElencoComuniCSV> listCsvObj) {
 		List<Region> listRegion = new ArrayList<>();
 
@@ -160,6 +195,11 @@ public class AnagService implements IAnagService {
 	}
 
 
+	/**
+	 * This private method transform Reader object to a list of ElencoComuniCSV (a list of CSV rows)
+	 * 
+	 * @return List<ElencoComuniCSV>
+	 */
 	private List<ElencoComuniCSV> getCsvObject(){
 		ColumnPositionMappingStrategy<ElencoComuniCSV> ms = new ColumnPositionMappingStrategy<>();
 		ms.setType(ElencoComuniCSV.class);
@@ -181,25 +221,49 @@ public class AnagService implements IAnagService {
 		return listCitiesCsv;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
+	/**
+	 * This method load data from ISTAT site (if they aren't loaded yet) and returns a list of GeograficZone
+	 * 
+	 * @return List<GeograficZone>
+	 */
 	public List<GeograficZone> getZones() {
 		loadLocations();
 		return locations.get(LocationMapEnum.ZONE);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
+	/**
+	 * This method load data from ISTAT site (if they aren't loaded yet) and returns a list of Region
+	 * 
+	 * @return List<Region>
+	 */
 	public List<Region> getRegions() {
 		loadLocations();
 		return locations.get(LocationMapEnum.REGION);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
+	/**
+	 * This method load data from ISTAT site (if they aren't loaded yet) and returns a list of Province
+	 * 
+	 * @return List<Province>
+	 */
 	public List<Province> getProvinces() {
 		loadLocations();
 		return locations.get(LocationMapEnum.PROVINCE);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
+	/**
+	 * This method load data from ISTAT site (if they aren't loaded yet) and returns a list of City
+	 * 
+	 * @return List<City>
+	 */
 	public List<City> getCities() {
 		loadLocations();
 		return locations.get(LocationMapEnum.CITY);

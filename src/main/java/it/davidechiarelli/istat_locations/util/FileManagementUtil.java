@@ -12,11 +12,23 @@ import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * This support class is used to load raw data from ISTAT site and returns a reader of entities
+ * 
+ * @author Davide Chiarelli
+ * @version 1.0.0
+ *
+ */
 public class FileManagementUtil {
 	private static final String CONFIG_URL="https://www.istat.it/storage/codici-unita-amministrative/Elenco-comuni-italiani.csv";
 	
 	Logger logger = LogManager.getLogger(FileManagementUtil.class);
 	
+	/**
+	 * This method open a stream with ISTAT web site and returns a Java reader
+	 * 
+	 * @return Reader: A reader of entities from ISTAT site
+	 */
 	public Reader getAnagReader() {
 		URL urlObject;
 		try {
