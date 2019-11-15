@@ -1,6 +1,6 @@
 # istat-locations library
 
-[![Build Status](https://travis-ci.org/dachiarelli89/istat-locations.svg?branch=master)](https://travis-ci.org/dachiarelli89/istat-locations) 
+[![Build Status](https://travis-ci.org/dachiarelli89/istat-locations.svg?branch=master)](https://travis-ci.org/dachiarelli89/istat-locations)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=dachiarelli89_istat-locations&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=dachiarelli89_istat-locations)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=dachiarelli89_istat-locations&metric=security_rating)](https://sonarcloud.io/dashboard?id=dachiarelli89_istat-locations)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=dachiarelli89_istat-locations&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=dachiarelli89_istat-locations)
