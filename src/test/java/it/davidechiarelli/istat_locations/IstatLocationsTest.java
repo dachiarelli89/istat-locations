@@ -50,6 +50,6 @@ public class IstatLocationsTest{
     public void testSuccesCityParsing() {	
     	List<City> cities = anagService.getCities();
     	assertNotNull(cities);
-		assertTrue(cities.size()==7908);
+		assertTrue(cities.size()==7904);
     }
 }

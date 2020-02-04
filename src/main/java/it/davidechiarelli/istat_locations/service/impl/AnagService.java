@@ -119,8 +119,8 @@ public class AnagService implements IAnagService {
 
 		listCsvObj.forEach(item -> {
 			if(listCity.isEmpty() ||
-					(! listCity.stream().map(City::getName).map(String::toUpperCase).collect(Collectors.toList())
-							.contains(item.getDenominazione().toUpperCase()))) {
+					(! listCity.stream().map(City::getCityCode).collect(Collectors.toList())
+							.contains(item.getCodiceComune()))) {
 				listCity.add(new City(
 						item.getDenominazione(), 
 						item.getDenominazioneInter(), 
