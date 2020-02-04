@@ -5,7 +5,7 @@
 
 	<groupId>it.davidechiarelli</groupId>
 	<artifactId>istat-locations</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<packaging>jar</packaging>
 
 	<name>istat-locations</name>
