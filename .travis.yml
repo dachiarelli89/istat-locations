@@ -8,5 +8,7 @@ addons:
     organization: "dachiarelli89"
     token:
       secure: "$SONAR_TOKEN" # encrypted value of your token
+
 script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=dachiarelli89_istat-locations
+  - mvn deploy -Duser=dachiarelli89 -Dpassword=$GITHUB_TOKEN -DskipTests
