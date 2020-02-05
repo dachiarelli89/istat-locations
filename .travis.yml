@@ -11,4 +11,12 @@ addons:
 
 script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=dachiarelli89_istat-locations
-  - mvn deploy -Duser=dachiarelli89 -Dpassword=$GITHUB_TOKEN -DskipTests
+
+deploy:
+  provider: releases
+  user: "dachiarelli89"
+    password: "${GITHUB_TOKEN}"
+  file: target/istat-locations-*
+  skip_cleanup: true
+  on:
+    tags: true
